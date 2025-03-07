@@ -5,121 +5,337 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Art Portfolio</title>
     <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+        }
         body {
-            background-color: #ffffff;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            flex-direction: column;
-            margin: 0;
-            padding: 20px;
+            background-color: #ffffff;
         }
         .gallery-container {
+            width: 100%;
+            height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+        .art-piece {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 100%;
+            display: flex;
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+            pointer-events: none;
+        }
+        .art-piece.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        /* Base layout for desktop */
+        .image-section {
+            width: 60%;
+            height: 100%;
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 80%;
-            max-width: 900px;
-            position: relative;
+            padding: 20px;
+            box-sizing: border-box;
         }
-        .art-piece {
+        .text-section {
+            width: 40%;
+            height: 100%;
+            box-sizing: border-box;
+            padding: 20px;
+        }
+        
+        /* Right-positioned images */
+        .art-piece.right .image-section {
+            order: 2;
+        }
+        .art-piece.right .text-section {
+            order: 1;
+        }
+        
+        /* Left-positioned images */
+        .art-piece.left .image-section {
+            order: 1;
+        }
+        .art-piece.left .text-section {
+            order: 2;
+        }
+        
+        .image-container {
+            width: 100%;
+            height: 100%;
             display: flex;
-            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            text-align: center;
-            max-width: 80%;
+            max-width: 100%;
+            max-height: 100%;
         }
+        
         img {
             max-width: 100%;
-            height: auto;
-            margin: 20px;
+            max-height: 100%;
+            object-fit: contain;
+            display: block;
         }
-        .header {
-            position: absolute;
-            padding: 10px;
-            font-size: 14px;
+        
+        /* Media queries for responsive design */
+        @media (max-width: 768px) {
+            .art-piece {
+                flex-direction: column;
+            }
+            .image-section, .text-section {
+                width: 100%;
+                height: auto;
+            }
+            .image-section {
+                height: 70vh;
+            }
+            .text-section {
+                height: 30vh;
+            }
+            /* Override order for mobile */
+            .art-piece.right .image-section,
+            .art-piece.left .image-section {
+                order: 1;
+            }
+            .art-piece.right .text-section,
+            .art-piece.left .text-section {
+                order: 2;
+            }
         }
-        .navigation {
-            display: flex;
-            justify-content: space-between;
-            width: 100%;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            padding: 10px;
+        
+        /* Smaller screens */
+        @media (max-width: 480px) {
+            .image-section {
+                padding: 10px;
+                height: 60vh;
+            }
+            .text-section {
+                padding: 10px;
+                height: 40vh;
+            }
         }
-        button {
-            padding: 10px 20px;
-            border: none;
-            background-color: rgba(50, 50, 50, 0.3);
-            color: white;
-            cursor: pointer;
-            font-size: 16px;
-            border-radius: 0;
-            width: 150px;
-            display: none;
+        
+        /* Landscape orientation on mobile */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .art-piece {
+                flex-direction: row;
+            }
+            .image-section {
+                width: 70%;
+                height: 100vh;
+            }
+            .text-section {
+                width: 30%;
+                height: 100vh;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="gallery-container">
-        <div class="art-piece" id="art-container">
-            <div id="header" class="header"></div>
-            <img id="art-image" src="" alt="Artwork">
-        </div>
-    </div>
-    <div class="navigation">
-        <button id="prev">&larr; Previous</button>
-        <button id="next">Next &rarr;</button>
+    <div class="gallery-container" id="gallery-container">
+        <!-- Art pieces will be dynamically added here -->
     </div>
 
     <script>
         const images = [
-            { src: "image1.jpg", header: "Canvas: 24x36" | Medium: Oil on Canvas", position: "left", headerPosition: "top: 10px; right: 10px;" },
-            { src: "image2.jpg", header: "Canvas: 18x24" | Medium: Acrylic on Paper", position: "right", headerPosition: "bottom: 10px; left: 10px;" },
-            { src: "image3.jpg", header: "Canvas: 30x40" | Medium: Watercolor on Board", position: "left", headerPosition: "top: 10px; left: 10px;" },
-            { src: "image4.jpg", header: "Canvas: 20x20" | Medium: Mixed Media", position: "right", headerPosition: "bottom: 10px; right: 10px;" },
-            { src: "image5.jpg", header: "Canvas: 16x20" | Medium: Charcoal on Paper", position: "left", headerPosition: "top: 10px; right: 10px;" },
-            { src: "image6.jpg", header: "Canvas: 12x16" | Medium: Digital Print", position: "right", headerPosition: "bottom: 10px; left: 10px;" },
-            { src: "image7.jpg", header: "Canvas: 24x24" | Medium: Ink on Board", position: "left", headerPosition: "top: 10px; left: 10px;" },
-            { src: "image8.jpg", header: "Canvas: 36x48" | Medium: Mixed Media", position: "right", headerPosition: "bottom: 10px; right: 10px;" },
-            { src: "image9.jpg", header: "Canvas: 20x30" | Medium: Acrylic on Canvas", position: "left", headerPosition: "top: 10px; right: 10px;" }
+            { src: "image7.png", position: "right" },
+            { src: "image2.png", position: "right" },
+            { src: "image3.png", position: "left" },
+            { src: "image1.png", position: "right" },
+            { src: "image5.png", position: "left" },
+            { src: "image4.png", position: "right" },
+            { src: "image6.png", position: "left" },
+            { src: "image8.png", position: "right" },
+            { src: "image9.png", position: "left" }
         ];
+
         let currentIndex = 0;
-
-        const artImage = document.getElementById("art-image");
-        const header = document.getElementById("header");
-        const artContainer = document.getElementById("art-container");
-        const prevButton = document.getElementById("prev");
-        const nextButton = document.getElementById("next");
-
-        function updateGallery() {
-            const artData = images[currentIndex];
-            artImage.src = `./ref_images/${artData.src}`;
-            header.textContent = artData.header;
-            header.style.cssText = artData.headerPosition;
-            artContainer.style.alignSelf = artData.position === "left" ? "flex-start" : "flex-end";
-            prevButton.style.display = currentIndex === 0 ? "none" : "block";
-            nextButton.style.display = currentIndex === images.length - 1 ? "none" : "block";
+        const totalImages = images.length;
+        const galleryContainer = document.getElementById("gallery-container");
+        
+        // Create all art pieces
+        function initializeGallery() {
+            // Create art pieces
+            images.forEach((image, index) => {
+                const artPiece = document.createElement("div");
+                artPiece.className = `art-piece ${image.position}`;
+                artPiece.id = `art-piece-${index}`;
+                
+                // Create image section
+                const imageSection = document.createElement("div");
+                imageSection.className = "image-section";
+                
+                const imageContainer = document.createElement("div");
+                imageContainer.className = "image-container";
+                
+                const img = document.createElement("img");
+                img.src = `./ref_images/${image.src}`;
+                img.alt = `Artwork ${index + 1}`;
+                // Add load event to handle image loading errors
+                img.onerror = function() {
+                    this.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23f0f0f0'/%3E%3Ctext x='50%25' y='50%25' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='14' fill='%23999'%3EImage not found%3C/text%3E%3C/svg%3E";
+                };
+                
+                // Create text section (currently empty)
+                const textSection = document.createElement("div");
+                textSection.className = "text-section";
+                
+                // Assemble the components
+                imageContainer.appendChild(img);
+                imageSection.appendChild(imageContainer);
+                
+                artPiece.appendChild(imageSection);
+                artPiece.appendChild(textSection);
+                
+                galleryContainer.appendChild(artPiece);
+            });
+            
+            // Show the first image
+            updateGallery();
         }
-
-        prevButton.addEventListener("click", () => {
-            if (currentIndex > 0) {
-                currentIndex--;
+        
+        function updateGallery() {
+            // Hide all images
+            document.querySelectorAll(".art-piece").forEach(piece => {
+                piece.classList.remove("active");
+            });
+            
+            // Show current image
+            const currentPiece = document.getElementById(`art-piece-${currentIndex}`);
+            currentPiece.classList.add("active");
+        }
+        
+        // Variables to track scroll state
+        let isScrolling = false;
+        let lastScrollTime = 0;
+        const scrollDelay = 800; 
+        
+        // Handle wheel events to change images
+        window.addEventListener("wheel", handleScroll, { passive: false });
+        
+        function handleScroll(e) {
+            e.preventDefault(); // Prevent default scroll behavior
+            
+            const currentTime = Date.now();
+            
+            // If we're already scrolling or haven't waited long enough, ignore this scroll event
+            if (isScrolling || currentTime - lastScrollTime < scrollDelay) {
+                return;
+            }
+            
+            isScrolling = true;
+            lastScrollTime = currentTime;
+            
+            // Change image based on scroll direction
+            if (e.deltaY > 0) {
+                // Scroll down - next image
+                currentIndex = (currentIndex + 1) % totalImages;
+            } else {
+                // Scroll up - previous image
+                currentIndex = (currentIndex - 1 + totalImages) % totalImages;
+            }
+            
+            updateGallery();
+            
+            // Reset scrolling flag after a delay
+            setTimeout(() => {
+                isScrolling = false;
+            }, 300);
+        }
+        
+        // Touch events for mobile
+        let touchStartY = 0;
+        let isTouching = false;
+        
+        window.addEventListener("touchstart", (e) => {
+            touchStartY = e.touches[0].clientY;
+            isTouching = true;
+        }, { passive: true });
+        
+        window.addEventListener("touchmove", (e) => {
+            if (!isTouching) return;
+            
+            const touchY = e.touches[0].clientY;
+            const diff = touchStartY - touchY;
+            
+            const currentTime = Date.now();
+            if (Math.abs(diff) > 50 && currentTime - lastScrollTime > scrollDelay) {
+                lastScrollTime = currentTime;
+                
+                if (diff > 0) {
+                    // Swipe up - next image
+                    currentIndex = (currentIndex + 1) % totalImages;
+                } else {
+                    // Swipe down - previous image
+                    currentIndex = (currentIndex - 1 + totalImages) % totalImages;
+                }
+                
+                updateGallery();
+                
+                // Ensure we only trigger once per touch gesture
+                isTouching = false;
+                e.preventDefault();
+            }
+        }, { passive: false });
+        
+        window.addEventListener("touchend", () => {
+            isTouching = false;
+        }, { passive: true });
+        
+        // Key navigation
+        window.addEventListener("keydown", (e) => {
+            const currentTime = Date.now();
+            if (currentTime - lastScrollTime < scrollDelay) {
+                return;
+            }
+            
+            lastScrollTime = currentTime;
+            
+            if (e.key === "ArrowDown" || e.key === "ArrowRight") {
+                currentIndex = (currentIndex + 1) % totalImages;
+                updateGallery();
+            } else if (e.key === "ArrowUp" || e.key === "ArrowLeft") {
+                currentIndex = (currentIndex - 1 + totalImages) % totalImages;
                 updateGallery();
             }
         });
-
-        nextButton.addEventListener("click", () => {
-            if (currentIndex < images.length - 1) {
-                currentIndex++;
-                updateGallery();
-            }
+        
+        // Handle window resize
+        window.addEventListener("resize", () => {
+            // No specific action needed as CSS handles the resizing,
+            // but this could be used for additional adjustments if needed
         });
-
-        updateGallery();
+        
+        // Initialize the gallery
+        initializeGallery();
+        
+        // Prevent default browser scroll behavior
+        document.addEventListener('DOMContentLoaded', function() {
+            // Prevent scroll on document body
+            document.body.addEventListener('wheel', function(e) {
+                e.preventDefault();
+            }, { passive: false });
+            
+            // Also prevent scroll on spacebar and arrow keys
+            document.body.addEventListener('keydown', function(e) {
+                if([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+                    e.preventDefault();
+                }
+            }, false);
+        });
     </script>
 </body>
 </html>
