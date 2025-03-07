@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Art Portfolio</title>
+    <style>
+        body {
+            background-color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            margin: 0;
+            padding: 20px;
+        }
+        .gallery-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 80%;
+            max-width: 900px;
+            position: relative;
+        }
+        .art-piece {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            max-width: 80%;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            margin: 20px;
+        }
+        .header {
+            position: absolute;
+            padding: 10px;
+            font-size: 14px;
+        }
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 10px;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: rgba(50, 50, 50, 0.3);
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 0;
+            width: 150px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="gallery-container">
+        <div class="art-piece" id="art-container">
+            <div id="header" class="header"></div>
+            <img id="art-image" src="" alt="Artwork">
+        </div>
+    </div>
+    <div class="navigation">
+        <button id="prev">&larr; Previous</button>
+        <button id="next">Next &rarr;</button>
+    </div>
+
+    <script>
+        const images = [
+            { src: "image1.jpg", header: "Canvas: 24x36" | Medium: Oil on Canvas", position: "left", headerPosition: "top: 10px; right: 10px;" },
+            { src: "image2.jpg", header: "Canvas: 18x24" | Medium: Acrylic on Paper", position: "right", headerPosition: "bottom: 10px; left: 10px;" },
+            { src: "image3.jpg", header: "Canvas: 30x40" | Medium: Watercolor on Board", position: "left", headerPosition: "top: 10px; left: 10px;" },
+            { src: "image4.jpg", header: "Canvas: 20x20" | Medium: Mixed Media", position: "right", headerPosition: "bottom: 10px; right: 10px;" },
+            { src: "image5.jpg", header: "Canvas: 16x20" | Medium: Charcoal on Paper", position: "left", headerPosition: "top: 10px; right: 10px;" },
+            { src: "image6.jpg", header: "Canvas: 12x16" | Medium: Digital Print", position: "right", headerPosition: "bottom: 10px; left: 10px;" },
+            { src: "image7.jpg", header: "Canvas: 24x24" | Medium: Ink on Board", position: "left", headerPosition: "top: 10px; left: 10px;" },
+            { src: "image8.jpg", header: "Canvas: 36x48" | Medium: Mixed Media", position: "right", headerPosition: "bottom: 10px; right: 10px;" },
+            { src: "image9.jpg", header: "Canvas: 20x30" | Medium: Acrylic on Canvas", position: "left", headerPosition: "top: 10px; right: 10px;" }
+        ];
+        let currentIndex = 0;
+
+        const artImage = document.getElementById("art-image");
+        const header = document.getElementById("header");
+        const artContainer = document.getElementById("art-container");
+        const prevButton = document.getElementById("prev");
+        const nextButton = document.getElementById("next");
+
+        function updateGallery() {
+            const artData = images[currentIndex];
+            artImage.src = `./ref_images/${artData.src}`;
+            header.textContent = artData.header;
+            header.style.cssText = artData.headerPosition;
+            artContainer.style.alignSelf = artData.position === "left" ? "flex-start" : "flex-end";
+            prevButton.style.display = currentIndex === 0 ? "none" : "block";
+            nextButton.style.display = currentIndex === images.length - 1 ? "none" : "block";
+        }
+
+        prevButton.addEventListener("click", () => {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateGallery();
+            }
+        });
+
+        nextButton.addEventListener("click", () => {
+            if (currentIndex < images.length - 1) {
+                currentIndex++;
+                updateGallery();
+            }
+        });
+
+        updateGallery();
+    </script>
+</body>
+</html>
